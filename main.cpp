@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>
+#include <vector>
 
 #include "assets/codes/RenderWindow.hpp"
 #include "assets/codes/Entity.hpp"
@@ -23,11 +24,13 @@ int main(int argc, char *argv[])
 
     SDL_Texture *grassTexture = window.LoadTexture("assets/sprites/ground_grass_1.png");
 
-    Entity platforms[5] = {Entity(100, 50, grassTexture),
-                           Entity(132, 50, grassTexture),
-                           Entity(164, 50, grassTexture),
-                           Entity(196, 50, grassTexture),
-                           Entity(228, 50, grassTexture)};
+    vector<Entity> entities = {Entity(Vector2f(100, 50), grassTexture),
+                               Entity(Vector2f(132, 50), grassTexture),
+                               Entity(Vector2f(164, 50), grassTexture),
+                               Entity(Vector2f(196, 50), grassTexture),
+                               Entity(Vector2f(228, 50), grassTexture)};
+
+    entities.push_back(Entity(Vector2f(228, 100), grassTexture));
 
     // Game Loop
     bool gameRunning = true;
@@ -45,9 +48,9 @@ int main(int argc, char *argv[])
         }
 
         window.Clear();
-        for (Entity platform : platforms)
+        for (Entity &e : entities)
         {
-            window.Render(platform);
+            window.Render(e);
         }
         window.Display();
     }

@@ -44,8 +44,8 @@ void RenderWindow::Render(Entity &p_entity)
     src.h = p_entity.GetCurrentFrame().h;
 
     SDL_Rect dst;
-    dst.x = p_entity.GetX() * 4;
-    dst.y = p_entity.GetY() * 4;
+    dst.x = p_entity.GetPos().x * 4;
+    dst.y = p_entity.GetPos().y * 4;
     dst.w = p_entity.GetCurrentFrame().w * 4;
     dst.h = p_entity.GetCurrentFrame().h * 4;
 
