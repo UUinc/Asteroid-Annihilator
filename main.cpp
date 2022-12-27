@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "assets/codes/RenderWindow.hpp"
+#include "assets/codes/Entity.hpp"
 
 using namespace std;
 
@@ -20,6 +21,14 @@ int main(int argc, char *argv[])
 
     RenderWindow window("Title", 1280, 720);
 
+    SDL_Texture *grassTexture = window.LoadTexture("assets/sprites/ground_grass_1.png");
+
+    Entity platforms[5] = {Entity(100, 50, grassTexture),
+                           Entity(132, 50, grassTexture),
+                           Entity(164, 50, grassTexture),
+                           Entity(196, 50, grassTexture),
+                           Entity(228, 50, grassTexture)};
+
     // Game Loop
     bool gameRunning = true;
     SDL_Event event;
@@ -34,6 +43,13 @@ int main(int argc, char *argv[])
                 break;
             }
         }
+
+        window.Clear();
+        for (Entity platform : platforms)
+        {
+            window.Render(platform);
+        }
+        window.Display();
     }
 
     window.CleanUp();
