@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
     // Game Loop
     bool gameRunning = true;
     SDL_Event event;
+
     while (gameRunning)
     {
         while (SDL_PollEvent(&event))
