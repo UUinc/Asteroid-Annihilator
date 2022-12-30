@@ -6,6 +6,9 @@
 #include <iostream>
 #include "Entity.hpp"
 
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 360
+
 using namespace std;
 
 class RenderWindow

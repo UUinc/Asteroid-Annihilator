@@ -15,6 +15,9 @@ private:
 
 public:
     Entity(Vector2f p_pos, SDL_Texture *p_tex);
+    Entity(Vector2f p_pos, float p_angle, SDL_Texture *p_tex);
+    Entity(Vector2f p_pos, Vector2f p_scale, SDL_Texture *p_tex);
+    Entity(Vector2f p_pos, float p_angle, Vector2f p_scale, SDL_Texture *p_tex);
     Vector2f GetPos();
     void SetPos(float x, float y);
     float GetAngle();

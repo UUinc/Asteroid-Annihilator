@@ -1,4 +1,4 @@
-# RPG 2D Platformer
+# Asteroid Annihilator
 
 =============
 
@@ -19,8 +19,16 @@ To build and run the project, follow these steps:
 5.  Run `make` to build the project.
 6.  Run `./main` to start the program.
 
+## Credits
+
+-   Celestial Objects Pixel Art Pack: https://norma-2d.itch.io/celestial-objects-pixel-art-pack
+-   Space Soundtrack: https://chiphead64.itch.io/space-soundtrack-01
+-   Mini Pixel Pack 3: https://grafxkid.itch.io/mini-pixel-pack-3
+
 if you have any question feel free to ask :smile:
+
 ### Contacts
-* uu.soft.inc@gmail.com
-* [twitter](https://twitter.com/yahya_lz)
-* [github](https://github.com/UUinc)
+
+-   uu.soft.inc@gmail.com
+-   [twitter](https://twitter.com/yahya_lz)
+-   [github](https://github.com/UUinc)

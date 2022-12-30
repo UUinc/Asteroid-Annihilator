@@ -20,17 +20,27 @@ int main(int argc, char *argv[])
         cout << "IMG_Init HAS FAILED. SDL_ERROR: " << SDL_GetError() << endl;
     }
 
-    RenderWindow window("Title", 1280, 720);
+    RenderWindow window("Asteroid Annihilator", SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    SDL_Texture *grassTexture = window.LoadTexture("assets/sprites/ground_grass_1.png");
+    // Background
+    SDL_Texture *backgroundTexture = window.LoadTexture("assets/sprites/background.png");
+    // Spaceship
+    SDL_Texture *spaceshipTexture = window.LoadTexture("assets/sprites/spaceship.png");
+    SDL_Texture *projectileTexture = window.LoadTexture("assets/sprites/projectile.png");
+    // Asteroids
+    SDL_Texture *asteroidLargeTexture = window.LoadTexture("assets/sprites/asteroid_large.png");
+    SDL_Texture *asteroidMediumTexture = window.LoadTexture("assets/sprites/asteroid_medium.png");
+    SDL_Texture *asteroidSmallTexture = window.LoadTexture("assets/sprites/asteroid_small.png");
 
-    vector<Entity> entities = {Entity(Vector2f(100, 50), grassTexture),
-                               Entity(Vector2f(132, 50), grassTexture),
-                               Entity(Vector2f(164, 50), grassTexture),
-                               Entity(Vector2f(196, 50), grassTexture),
-                               Entity(Vector2f(228, 50), grassTexture)};
+    Entity background = Entity(Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), Vector2f(6, 6), backgroundTexture);
 
-    entities.push_back(Entity(Vector2f(228, 100), grassTexture));
+    Entity spaceship = Entity(Vector2f(SCREEN_WIDTH / 2 - 16, 300), Vector2f(3, 3), spaceshipTexture);
+    Entity projectileLeft = Entity(Vector2f(SCREEN_WIDTH / 2 - 21, 280), Vector2f(3, 3), projectileTexture);
+    Entity projectileRight = Entity(Vector2f(SCREEN_WIDTH / 2 + 5, 280), Vector2f(3, 3), projectileTexture);
+
+    Entity asteroidLarge = Entity(Vector2f(100, 50), Vector2f(3, 3), asteroidLargeTexture);
+    Entity asteroidMedium = Entity(Vector2f(200, 50), Vector2f(3, 3), asteroidMediumTexture);
+    Entity asteroidSmall = Entity(Vector2f(308, 250), Vector2f(3, 3), asteroidSmallTexture);
 
     // Game Loop
     bool gameRunning = true;
@@ -49,10 +59,13 @@ int main(int argc, char *argv[])
         }
 
         window.Clear();
-        for (Entity &e : entities)
-        {
-            window.Render(e);
-        }
+        window.Render(background);
+        window.Render(spaceship);
+        window.Render(projectileLeft);
+        window.Render(projectileRight);
+        window.Render(asteroidLarge);
+        window.Render(asteroidMedium);
+        window.Render(asteroidSmall);
         window.Display();
     }
 
