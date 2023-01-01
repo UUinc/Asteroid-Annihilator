@@ -6,7 +6,9 @@
 
 struct circle
 {
-    int x, y, r;
+    int x = 16;
+    int y = 16;
+    int r = 16;
 };
 
 class Entity

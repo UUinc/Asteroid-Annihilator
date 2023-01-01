@@ -1,3 +1,4 @@
+#include <SDL2/SDL_main.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
@@ -41,7 +42,7 @@ void Quit()
     SDL_Quit();
 }
 
-int main(int argc, char *argv[])
+int SDL_main(int argc, char *argv[])
 {
     Init();
 
@@ -154,6 +155,11 @@ int main(int argc, char *argv[])
             // if projectile is outside of the screen wipe it
             if (projectile.GetLeft().GetPosition().y < 0)
             {
+                projectiles.erase(projectiles.begin());
+            }
+            else if (projectile.GetLeft().GetCollision(&asteroidSmall) || projectile.GetRight().GetCollision(&asteroidSmall))
+            {
+                cout << "Collision!" << endl;
                 projectiles.erase(projectiles.begin());
             }
             else
