@@ -6,6 +6,7 @@
 
 #include "assets/codes/RenderWindow.hpp"
 #include "assets/codes/Entity.hpp"
+#include "assets/codes/Projectile.hpp"
 
 using namespace std;
 
@@ -64,8 +65,7 @@ int main(int argc, char *argv[])
     Entity background = Entity(Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), Vector2f(6, 6), backgroundTexture);
 
     Entity spaceship = Entity(Vector2f(SCREEN_WIDTH / 2 - 16, 300), Vector2f(3, 3), spaceshipTexture);
-    Entity projectileLeft = Entity(Vector2f(SCREEN_WIDTH / 2 - 21, 280), Vector2f(3, 3), projectileTexture);
-    Entity projectileRight = Entity(Vector2f(SCREEN_WIDTH / 2 + 5, 280), Vector2f(3, 3), projectileTexture);
+    vector<Projectile> projectiles;
 
     Entity asteroidLarge = Entity(Vector2f(100, 50), Vector2f(3, 3), asteroidLargeTexture);
     Entity asteroidMedium = Entity(Vector2f(200, 50), Vector2f(3, 3), asteroidMediumTexture);
@@ -74,6 +74,9 @@ int main(int argc, char *argv[])
     // Variables
     Vector2f movement;
     float movementSpeed = 5;
+
+    bool projectileLaunch = true;
+    float projectileSpeed = 3;
 
     // Game Loop
     bool gameRunning = true;
@@ -92,7 +95,10 @@ int main(int argc, char *argv[])
                 switch (event.key.keysym.sym)
                 {
                 case SDLK_UP:
-                    /* code */
+                    if (!projectileLaunch)
+                        break;
+                    projectiles.push_back(Projectile(spaceship.GetPosition().x - 5, spaceship.GetPosition().x + 21, projectileTexture));
+                    projectileLaunch = false;
                     break;
                 case SDLK_LEFT:
                 case SDLK_a:
@@ -108,7 +114,7 @@ int main(int argc, char *argv[])
                 switch (event.key.keysym.sym)
                 {
                 case SDLK_UP:
-                    /* code */
+                    projectileLaunch = true;
                     break;
                 case SDLK_LEFT:
                 case SDLK_a:
@@ -129,22 +135,38 @@ int main(int argc, char *argv[])
         // Spaceship movement
         if (movement.x < 0)
         {
-            if (spaceship.GetPos().x > 25)
+            if (spaceship.GetPosition().x > 25)
             {
                 spaceship.Move(movement);
             }
         }
         if (movement.x > 0)
         {
-            if (spaceship.GetPos().x < SCREEN_WIDTH - 40)
+            if (spaceship.GetPosition().x < SCREEN_WIDTH - 40)
             {
                 spaceship.Move(movement);
             }
         }
 
+        // Projectile Movement
+        for (Projectile &projectile : projectiles)
+        {
+            // if projectile is outside of the screen wipe it
+            if (projectile.GetLeft().GetPosition().y < 0)
+            {
+                projectiles.erase(projectiles.begin());
+            }
+            else
+            {
+                projectile.GetLeft().Move(Vector2f(0, -projectileSpeed));
+                projectile.GetRight().Move(Vector2f(0, -projectileSpeed));
+
+                window.Render(projectile.GetLeft());
+                window.Render(projectile.GetRight());
+            }
+        }
+
         window.Render(spaceship);
-        window.Render(projectileLeft);
-        window.Render(projectileRight);
         window.Render(asteroidLarge);
         window.Render(asteroidMedium);
         window.Render(asteroidSmall);
