@@ -1,7 +1,5 @@
 # Asteroid Annihilator
 
-=============
-
 ## Dependencies
 
 In order to build and run this project, you will need to have the following dependencies installed on your system:
