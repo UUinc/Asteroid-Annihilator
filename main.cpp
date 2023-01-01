@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <iostream>
 #include <vector>
 
@@ -8,7 +9,7 @@
 
 using namespace std;
 
-int main(int argc, char *argv[])
+void Init()
 {
     if (SDL_Init(SDL_INIT_VIDEO) > 0)
     {
@@ -20,7 +21,35 @@ int main(int argc, char *argv[])
         cout << "IMG_Init HAS FAILED. SDL_ERROR: " << SDL_GetError() << endl;
     }
 
+    if (!Mix_Init(MIX_INIT_MP3 | MIX_INIT_OPUS | MIX_INIT_OGG))
+    {
+        cout << "Mix_Init HAS FAILED. SDL_ERROR: " << SDL_GetError() << endl;
+    }
+
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 6, 4096) == -1)
+    {
+        cout << "Mix_OpenAudio HAS FAILED. SDL_ERROR: " << SDL_GetError() << endl;
+    }
+}
+
+void Quit()
+{
+    Mix_CloseAudio();
+    Mix_Quit();
+    IMG_Quit();
+    SDL_Quit();
+}
+
+int main(int argc, char *argv[])
+{
+    Init();
+
     RenderWindow window("Asteroid Annihilator", SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    // MUSIC
+    Mix_Music *music = Mix_LoadMUS("assets/sounds/music/SpaceRiddle.ogg");
+    Mix_VolumeMusic(10);
+    Mix_PlayMusic(music, 0);
 
     // Background
     SDL_Texture *backgroundTexture = window.LoadTexture("assets/sprites/background.png");
@@ -42,6 +71,10 @@ int main(int argc, char *argv[])
     Entity asteroidMedium = Entity(Vector2f(200, 50), Vector2f(3, 3), asteroidMediumTexture);
     Entity asteroidSmall = Entity(Vector2f(308, 250), Vector2f(3, 3), asteroidSmallTexture);
 
+    // Variables
+    Vector2f movement;
+    float movementSpeed = 5;
+
     // Game Loop
     bool gameRunning = true;
     SDL_Event event;
@@ -55,11 +88,60 @@ int main(int argc, char *argv[])
             case SDL_QUIT:
                 gameRunning = false;
                 break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_UP:
+                    /* code */
+                    break;
+                case SDLK_LEFT:
+                case SDLK_a:
+                    movement.x = -movementSpeed;
+                    break;
+                case SDLK_RIGHT:
+                case SDLK_d:
+                    movement.x = movementSpeed;
+                    break;
+                }
+                break;
+            case SDL_KEYUP:
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_UP:
+                    /* code */
+                    break;
+                case SDLK_LEFT:
+                case SDLK_a:
+                    movement.x = 0;
+                    break;
+                case SDLK_RIGHT:
+                case SDLK_d:
+                    movement.x = 0;
+                    break;
+                }
+                break;
             }
         }
 
         window.Clear();
         window.Render(background);
+
+        // Spaceship movement
+        if (movement.x < 0)
+        {
+            if (spaceship.GetPos().x > 25)
+            {
+                spaceship.Move(movement);
+            }
+        }
+        if (movement.x > 0)
+        {
+            if (spaceship.GetPos().x < SCREEN_WIDTH - 40)
+            {
+                spaceship.Move(movement);
+            }
+        }
+
         window.Render(spaceship);
         window.Render(projectileLeft);
         window.Render(projectileRight);
@@ -69,8 +151,10 @@ int main(int argc, char *argv[])
         window.Display();
     }
 
+    Mix_HaltMusic();
+    Mix_FreeMusic(music);
     window.CleanUp();
-    SDL_Quit();
+    Quit();
 
     return 0;
 }

@@ -58,3 +58,13 @@ void Entity::SetScale(float w, float h)
     scale.x = w;
     scale.y = h;
 }
+
+void Entity::Move(float x, float y)
+{
+    SetPos(GetPos().x + x, GetPos().y + y);
+}
+
+void Entity::Move(Vector2f value)
+{
+    Move(value.x, value.y);
+}

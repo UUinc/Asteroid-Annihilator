@@ -26,4 +26,7 @@ public:
     void SetScale(float w, float h);
     SDL_Texture *GetTexture();
     SDL_Rect GetCurrentFrame();
+
+    void Move(float x, float y);
+    void Move(Vector2f value);
 };
