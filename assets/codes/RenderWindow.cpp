@@ -32,6 +32,7 @@ void RenderWindow::CleanUp()
 
 void RenderWindow::Clear()
 {
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0);
     SDL_RenderClear(renderer);
 }
 
@@ -100,3 +101,5 @@ void RenderWindow::Display()
 {
     SDL_RenderPresent(renderer);
 }
+
+SDL_Renderer *RenderWindow::GetRenderer() { return renderer; }

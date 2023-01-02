@@ -8,11 +8,16 @@
 #include "assets/codes/RenderWindow.hpp"
 #include "assets/codes/Entity.hpp"
 #include "assets/codes/Projectile.hpp"
+#include "assets/codes/Shapes.hpp"
+
+#include "assets/codes/Math.hpp"
 
 using namespace std;
 
 void Init()
 {
+    std::srand(std::time(nullptr));
+
     if (SDL_Init(SDL_INIT_VIDEO) > 0)
     {
         cout << "SDL_Init HAS FAILED. SDL_ERROR: " << SDL_GetError() << endl;
@@ -46,6 +51,21 @@ int SDL_main(int argc, char *argv[])
 {
     Init();
 
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+    cout << "Random: " << RandomInt(3, 5) << endl;
+
     RenderWindow window("Asteroid Annihilator", SCREEN_WIDTH, SCREEN_HEIGHT);
 
     // MUSIC
@@ -63,14 +83,20 @@ int SDL_main(int argc, char *argv[])
     SDL_Texture *asteroidMediumTexture = window.LoadTexture("assets/sprites/asteroid_medium.png");
     SDL_Texture *asteroidSmallTexture = window.LoadTexture("assets/sprites/asteroid_small.png");
 
-    Entity background = Entity(Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), Vector2f(6, 6), backgroundTexture);
+    Entity background = Entity(Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20), Vector2f(6, 6), backgroundTexture);
 
     Entity spaceship = Entity(Vector2f(SCREEN_WIDTH / 2 - 16, 300), Vector2f(3, 3), spaceshipTexture);
     vector<Projectile> projectiles;
 
-    Entity asteroidLarge = Entity(Vector2f(100, 50), Vector2f(3, 3), asteroidLargeTexture);
-    Entity asteroidMedium = Entity(Vector2f(200, 50), Vector2f(3, 3), asteroidMediumTexture);
-    Entity asteroidSmall = Entity(Vector2f(308, 250), Vector2f(3, 3), asteroidSmallTexture);
+    vector<Entity> asteroids;
+    asteroids.push_back(Entity(Vector2f(280, -50), Vector2f(3, 3), asteroidLargeTexture));
+
+    Entity asteroidLarge = Entity(Vector2f(280, -50), Vector2f(3, 3), asteroidLargeTexture);
+    asteroidLarge.SetCenter(22, 16, 46);
+    Entity asteroidMedium = Entity(Vector2f(50, -50), Vector2f(3, 3), asteroidMediumTexture);
+    asteroidMedium.SetCenter(22, 8, 38);
+    Entity asteroidSmall = Entity(Vector2f(488, -50), Vector2f(3, 3), asteroidSmallTexture);
+    asteroidSmall.SetCenter(14, 6, 15);
 
     // Variables
     Vector2f movement;
@@ -78,6 +104,8 @@ int SDL_main(int argc, char *argv[])
 
     bool projectileLaunch = true;
     float projectileSpeed = 3;
+
+    float asteroidSpeed = .5;
 
     // Game Loop
     bool gameRunning = true;
@@ -159,7 +187,17 @@ int SDL_main(int argc, char *argv[])
             }
             else if (projectile.GetLeft().GetCollision(&asteroidSmall) || projectile.GetRight().GetCollision(&asteroidSmall))
             {
-                cout << "Collision!" << endl;
+                cout << "Collision small!" << endl;
+                projectiles.erase(projectiles.begin());
+            }
+            else if (projectile.GetLeft().GetCollision(&asteroidMedium) || projectile.GetRight().GetCollision(&asteroidMedium))
+            {
+                cout << "Collision medium!" << endl;
+                projectiles.erase(projectiles.begin());
+            }
+            else if (projectile.GetLeft().GetCollision(&asteroidLarge) || projectile.GetRight().GetCollision(&asteroidLarge))
+            {
+                cout << "Collision large!" << endl;
                 projectiles.erase(projectiles.begin());
             }
             else
@@ -173,9 +211,15 @@ int SDL_main(int argc, char *argv[])
         }
 
         window.Render(spaceship);
+
+        asteroidLarge.Move(Vector2f(0, asteroidSpeed));
+        asteroidMedium.Move(Vector2f(0, asteroidSpeed));
+        asteroidSmall.Move(Vector2f(0, asteroidSpeed));
+
         window.Render(asteroidLarge);
         window.Render(asteroidMedium);
         window.Render(asteroidSmall);
+
         window.Display();
     }
 

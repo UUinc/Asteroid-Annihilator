@@ -26,4 +26,5 @@ public:
     void Render(float p_x, float p_y, const char *p_text, TTF_Font *font, SDL_Color textColor);
     void RenderCenter(float p_x, float p_y, int screen_width, int screen_height, const char *p_text, TTF_Font *font, SDL_Color textColor);
     void Display();
+    SDL_Renderer *GetRenderer();
 };

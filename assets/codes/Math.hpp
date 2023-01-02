@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 struct Vector2f
 {
@@ -13,3 +15,5 @@ struct Vector2f
 
     float x, y;
 };
+
+int RandomInt(int min, int max);
