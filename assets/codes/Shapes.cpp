@@ -60,8 +60,13 @@ void renderCirclePerimeterBresenham(SDL_Renderer *renderer, int x0, int y0, int 
     }
 }
 
+void ColliderRender(SDL_Renderer *renderer, Entity entity, SDL_Color color)
+{
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    renderCirclePerimeterBresenham(renderer, entity.GetPosition().x + entity.GetCenter().x - 8, entity.GetPosition().y + entity.GetCenter().y, entity.GetCenter().r);
+}
 void ColliderRender(SDL_Renderer *renderer, Entity entity)
 {
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    renderCirclePerimeterBresenham(renderer, entity.GetPosition().x + entity.GetCenter().x - 8, entity.GetPosition().y + entity.GetCenter().y, entity.GetCenter().r);
+    SDL_Color color = {255, 0, 0, 255};
+    ColliderRender(renderer, entity, color);
 }

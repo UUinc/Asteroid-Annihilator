@@ -9,8 +9,7 @@
 #include "assets/codes/Entity.hpp"
 #include "assets/codes/Projectile.hpp"
 #include "assets/codes/Shapes.hpp"
-
-#include "assets/codes/Math.hpp"
+#include "assets/codes/Asteroid.hpp"
 
 using namespace std;
 
@@ -51,21 +50,6 @@ int SDL_main(int argc, char *argv[])
 {
     Init();
 
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-    cout << "Random: " << RandomInt(3, 5) << endl;
-
     RenderWindow window("Asteroid Annihilator", SCREEN_WIDTH, SCREEN_HEIGHT);
 
     // MUSIC
@@ -86,17 +70,11 @@ int SDL_main(int argc, char *argv[])
     Entity background = Entity(Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20), Vector2f(6, 6), backgroundTexture);
 
     Entity spaceship = Entity(Vector2f(SCREEN_WIDTH / 2 - 16, 300), Vector2f(3, 3), spaceshipTexture);
+    spaceship.SetCenter(16, 16, 22);
     vector<Projectile> projectiles;
 
     vector<Entity> asteroids;
-    asteroids.push_back(Entity(Vector2f(280, -50), Vector2f(3, 3), asteroidLargeTexture));
-
-    Entity asteroidLarge = Entity(Vector2f(280, -50), Vector2f(3, 3), asteroidLargeTexture);
-    asteroidLarge.SetCenter(22, 16, 46);
-    Entity asteroidMedium = Entity(Vector2f(50, -50), Vector2f(3, 3), asteroidMediumTexture);
-    asteroidMedium.SetCenter(22, 8, 38);
-    Entity asteroidSmall = Entity(Vector2f(488, -50), Vector2f(3, 3), asteroidSmallTexture);
-    asteroidSmall.SetCenter(14, 6, 15);
+    asteroids.push_back(RandomAsteroid(asteroidLargeTexture, asteroidMediumTexture, asteroidSmallTexture));
 
     // Variables
     Vector2f movement;
@@ -178,47 +156,81 @@ int SDL_main(int argc, char *argv[])
         }
 
         // Projectile Movement
-        for (Projectile &projectile : projectiles)
+        for (int i = 0; i < projectiles.size(); i++)
         {
             // if projectile is outside of the screen wipe it
-            if (projectile.GetLeft().GetPosition().y < 0)
+            if (projectiles[i].GetLeft().GetPosition().y < 0)
             {
-                projectiles.erase(projectiles.begin());
-            }
-            else if (projectile.GetLeft().GetCollision(&asteroidSmall) || projectile.GetRight().GetCollision(&asteroidSmall))
-            {
-                cout << "Collision small!" << endl;
-                projectiles.erase(projectiles.begin());
-            }
-            else if (projectile.GetLeft().GetCollision(&asteroidMedium) || projectile.GetRight().GetCollision(&asteroidMedium))
-            {
-                cout << "Collision medium!" << endl;
-                projectiles.erase(projectiles.begin());
-            }
-            else if (projectile.GetLeft().GetCollision(&asteroidLarge) || projectile.GetRight().GetCollision(&asteroidLarge))
-            {
-                cout << "Collision large!" << endl;
-                projectiles.erase(projectiles.begin());
+                projectiles.erase(projectiles.begin() + i);
             }
             else
             {
-                projectile.GetLeft().Move(Vector2f(0, -projectileSpeed));
-                projectile.GetRight().Move(Vector2f(0, -projectileSpeed));
+                projectiles[i].GetLeft().Move(Vector2f(0, -projectileSpeed));
+                projectiles[i].GetRight().Move(Vector2f(0, -projectileSpeed));
 
-                window.Render(projectile.GetLeft());
-                window.Render(projectile.GetRight());
+                window.Render(projectiles[i].GetLeft());
+                window.Render(projectiles[i].GetRight());
+            }
+
+            for (int j = 0; j < asteroids.size(); j++)
+            {
+                if (projectiles[i].GetLeft().GetCollision(&asteroids[j]) || projectiles[i].GetRight().GetCollision(&asteroids[j]))
+                {
+                    switch (asteroids[j].GetCenter().r)
+                    {
+                    case 15:
+                        cout << "Collision small!" << endl;
+                        break;
+                    case 38:
+                        cout << "Collision medium!" << endl;
+                        break;
+                    case 46:
+                        cout << "Collision large!" << endl;
+                        break;
+                    }
+
+                    projectiles.erase(projectiles.begin() + i);
+                    asteroids.erase(asteroids.begin() + j);
+
+                    // instantiate new asteroid
+                    asteroids.push_back(RandomAsteroid(asteroidLargeTexture, asteroidMediumTexture, asteroidSmallTexture));
+
+                    // add speed to asteroids
+                    asteroidSpeed += .2;
+                }
             }
         }
 
         window.Render(spaceship);
 
-        asteroidLarge.Move(Vector2f(0, asteroidSpeed));
-        asteroidMedium.Move(Vector2f(0, asteroidSpeed));
-        asteroidSmall.Move(Vector2f(0, asteroidSpeed));
+        // Asteroids
+        for (int i = 0; i < asteroids.size(); i++)
+        {
+            if (asteroids[i].GetCollision(&spaceship))
+            {
+                cout << "Game over" << endl;
+                gameRunning = false;
+                break;
+            }
 
-        window.Render(asteroidLarge);
-        window.Render(asteroidMedium);
-        window.Render(asteroidSmall);
+            if (asteroids[i].GetPosition().y > 410)
+            {
+                asteroids.erase(asteroids.begin() + i);
+                // instantiate new asteroid
+                asteroids.push_back(RandomAsteroid(asteroidLargeTexture, asteroidMediumTexture, asteroidSmallTexture));
+
+                if (asteroidSpeed >= 1.2)
+                {
+                    // subs speed to asteroids
+                    asteroidSpeed -= .2;
+                }
+            }
+            else
+            {
+                asteroids[i].Move(Vector2f(0, asteroidSpeed));
+                window.Render(asteroids[i]);
+            }
+        }
 
         window.Display();
     }
