@@ -53,9 +53,18 @@ int SDL_main(int argc, char *argv[])
     RenderWindow window("Asteroid Annihilator", SCREEN_WIDTH, SCREEN_HEIGHT);
 
     // MUSIC
-    Mix_Music *music = Mix_LoadMUS("assets/sounds/music/SpaceRiddle.ogg");
+    Mix_Music *music = Mix_LoadMUS("assets/sounds/music/music.ogg");
     Mix_VolumeMusic(10);
-    Mix_PlayMusic(music, 0);
+    Mix_PlayMusic(music, -1);
+
+    // SFX
+    Mix_Chunk *clickSFX = Mix_LoadWAV("assets/sounds/sfx/click.ogg");
+    Mix_Chunk *laserSFX = Mix_LoadWAV("assets/sounds/sfx/laser.ogg");
+    Mix_Chunk *collisionSFX = Mix_LoadWAV("assets/sounds/sfx/explosion.ogg");
+    Mix_Chunk *gameOverSFX = Mix_LoadWAV("assets/sounds/sfx/gameOver.ogg");
+    Mix_Volume(2, 50);
+    Mix_VolumeChunk(laserSFX, 70);
+    Mix_VolumeChunk(collisionSFX, 70);
 
     // Background
     SDL_Texture *backgroundTexture = window.LoadTexture("assets/sprites/background.png");
@@ -104,6 +113,7 @@ int SDL_main(int argc, char *argv[])
                 case SDLK_UP:
                     if (!projectileLaunch)
                         break;
+                    Mix_PlayChannel(-1, laserSFX, 0);
                     projectiles.push_back(Projectile(spaceship.GetPosition().x - 5, spaceship.GetPosition().x + 21, projectileTexture));
                     projectileLaunch = false;
                     break;
@@ -189,6 +199,9 @@ int SDL_main(int argc, char *argv[])
                         break;
                     }
 
+                    // Play collision sfx
+                    Mix_PlayChannel(-1, collisionSFX, 0);
+
                     projectiles.erase(projectiles.begin() + i);
                     asteroids.erase(asteroids.begin() + j);
 
@@ -209,7 +222,11 @@ int SDL_main(int argc, char *argv[])
             if (asteroids[i].GetCollision(&spaceship))
             {
                 cout << "Game over" << endl;
-                gameRunning = false;
+                // Play collision sfx
+                Mix_PlayChannel(-1, collisionSFX, 0);
+                Mix_PlayChannel(-1, gameOverSFX, 0);
+
+                // gameRunning = false;
                 break;
             }
 
@@ -237,6 +254,11 @@ int SDL_main(int argc, char *argv[])
 
     Mix_HaltMusic();
     Mix_FreeMusic(music);
+    Mix_FreeChunk(gameOverSFX);
+    Mix_FreeChunk(collisionSFX);
+    Mix_FreeChunk(laserSFX);
+    Mix_FreeChunk(clickSFX);
+
     window.CleanUp();
     Quit();
 

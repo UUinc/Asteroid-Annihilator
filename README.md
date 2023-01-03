@@ -19,8 +19,8 @@ To build and run the project, follow these steps:
 
 ## Credits
 
+-   Soundtrack: Zakaria Messous
 -   Celestial Objects Pixel Art Pack: https://norma-2d.itch.io/celestial-objects-pixel-art-pack
--   Space Soundtrack: https://chiphead64.itch.io/space-soundtrack-01
 -   Mini Pixel Pack 3: https://grafxkid.itch.io/mini-pixel-pack-3
 
 if you have any question feel free to ask :smile:
