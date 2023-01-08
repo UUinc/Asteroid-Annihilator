@@ -1,5 +1,10 @@
 # Asteroid Annihilator
 
+## Game
+![home](https://user-images.githubusercontent.com/63449913/211220618-e64d4005-4f91-457a-963b-b4165191b5bc.JPG)
+![gameplay](https://user-images.githubusercontent.com/63449913/211220623-a7d8bd32-1670-4ee8-a7a9-47897d4140ab.JPG)
+![gameover](https://user-images.githubusercontent.com/63449913/211220629-84ddc07f-17e3-4d2c-a56f-f7e87acf2b42.JPG)
+
 ## Dependencies
 
 In order to build and run this project, you will need to have the following dependencies installed on your system:
