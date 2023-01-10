@@ -3,3 +3,4 @@
 src/*
 .vscode/settings.json
 main.exe
+build/*
