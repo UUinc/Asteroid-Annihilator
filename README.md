@@ -19,7 +19,7 @@ To build and run the project, follow these steps:
 2.  Download SDL2 template: https://github.com/UUinc/SDL2_Template
 3.  move SDL2 template `src` folder and `.dll` files in the root of the game repository
 4.  Navigate to the root of the repository.
-5.  Run `make` to build the project.
+5.  Run `make` or `mingw32-make` to build the project.
 6.  Run `./main` to start the program.
 
 ## Credits
